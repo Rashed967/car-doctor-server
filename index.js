@@ -28,16 +28,10 @@ async function run() {
     await client.connect();
 
     const servicesCollection = client.db('carDoctor').collection('services')
-
-    // app.get('/services',  async(req, res) => {
-    //     const cursor = servicesCollection.find()
-    //     const result = await cursor.toArray()
-    //     res.send(result)
-    // })
+    const checkingCollection = client.db('carBooks').collection('carBook')
 
     app.get('/services', async (req, res) => {
         const query = req.query;
-        console.log(query)
         const result = await servicesCollection.find().toArray()
         res.send(result)
     })
@@ -46,13 +40,19 @@ async function run() {
     app.get('/services/:id', async (req, res) => {
         const id = req.params.id;
         const query = {_id : new ObjectId(id)}
-        console.log(id)
         const options = {
             // Include only the `title` and `imdb` fields in the returned document
             projection: { title: 1, price: 1, service_id : 1},
           };
       
         const result = await servicesCollection.findOne(query, options)
+        res.send(result)
+    })
+
+
+    app.post('/checkout', async (req, res ) => {
+        const checkout = req.body;
+        const result = await checkingCollection.insertOne(checkout)
         res.send(result)
     })
 
