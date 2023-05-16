@@ -63,8 +63,13 @@ async function run() {
         res.send(result)
     })
 
+
+    // checkout 
     app.get('/checkout', async(req, res) => {
       let query = {};
+      if(req.query?.email) {
+        query = {email : req.query.email}
+      }
       const result = await checkingCollection.find(query).toArray()
       res.send(result)
       console.log(query)
