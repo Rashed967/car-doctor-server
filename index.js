@@ -36,7 +36,7 @@ async function run() {
         res.send(result)
     })
 
-
+    
     app.get('/services/:id', async (req, res) => {
         const id = req.params.id;
         const query = {_id : new ObjectId(id)}
@@ -50,19 +50,15 @@ async function run() {
     })
 
     app.get('/checkout', async(req, res) => {
-        console.log(req.query.email)
-        let query = {}
-        if(req.query?.email){
-          query = {email : req.query.email}
-        }
-        const result = await checkingCollection.find(query).toArray()
-        res.send(result)
+      let query = {};
+      const result = await checkingCollection.find(query).toArray()
+      res.send(result)
+      console.log(query)
     })
 
-
     app.post('/checkout', async (req, res ) => {
-        const checking = req.body;
-        const result = await checkingCollection.insertOne(checking)
+        const checkout = req.body;
+        const result = await checkingCollection.insertOne(checkout)
         res.send(result)
     })
 
