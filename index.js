@@ -32,6 +32,16 @@ async function run() {
     const servicesCollection = client.db('carDoctor').collection('services')
     const checkingCollection = client.db('carBooks').collection('carBook')
 
+    // jwt 
+    app.post('/jwt', (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_SECRET_TOKEN, {
+        expiresIn : '1h'
+      })
+      res.send(token)
+    })
+
+    // services 
     app.get('/services', async (req, res) => {
         const query = req.query;
         const result = await servicesCollection.find().toArray()
