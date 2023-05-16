@@ -11,6 +11,7 @@ app.use(express.json())
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const req = require('express/lib/request');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kt6fwyn.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -42,7 +43,7 @@ async function run() {
         const query = {_id : new ObjectId(id)}
         const options = {
             // Include only the `title` and `imdb` fields in the returned document
-            projection: { title: 1, price: 1, service_id : 1},
+            projection: { title: 1, price: 1, service_id : 1, img : 1},
           };
       
         const result = await servicesCollection.findOne(query, options)
@@ -64,6 +65,27 @@ async function run() {
         const checking = req.body;
         const result = await checkingCollection.insertOne(checking)
         res.send(result)
+    })
+
+    app.patch('/checkout/:id', async (req, res) => {
+      const id = req.params.id
+      const filter = {_id : new ObjectId(id)}
+      const updatedBook = req.body;
+      const newUpdatedBook = {
+        $set : {
+          status : updatedBook.status
+        }
+      }
+      const result = await checkingCollection.updateOne(filter, newUpdatedBook)
+      res.send(result)
+      console.log(result)
+    })
+
+    app.delete('/checkout/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {_id : new ObjectId(id)}
+      const result = await checkingCollection.deleteOne(query)
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
